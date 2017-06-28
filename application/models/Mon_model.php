@@ -20,6 +20,17 @@ class mon_model extends CI_Model
     public function __construct()
     {
         $this->table = "chambre";
+	protected $special = 'specialiste';
+	protected $personne='personne';
+	protected $caissier='caissier';
+	protected $patient = 'patient';
+	protected $hopital = 'hopital';
+	protected $service = 'service';
+	protected $salle = 'salle';
+	protected $equipement = 'equipement';
+	protected $agenda = 'agenda';
+	protected $consultation = 'consultation';
+    protected $user = 'user';
     }
 
     public function set($table,$data)
@@ -52,6 +63,145 @@ class mon_model extends CI_Model
      * @param type $data_where :  specify the condition of edit 
      * exemple $data_where = array("nom"=>"Léana")
      */
+	 
+	
+	/* *	Ajoute une news
+	 *
+	 *	@param string $auteur 	L'auteur de la news
+	 *	@param string $titre 	Le titre de la news
+	 *	@param string $contenu 	Le contenu de la news
+	 *	@return bool		Le résultat de la requête
+	 */
+	
+// liste des specialiste
+	function get_all_specialiste(){
+$this->db->select('*');
+$this->db->from('personne as per');
+$this->db->join('specialiste as spl', 'per.id = spl.id_persone');
+$query = $this->db->get();
+if($query->num_rows() >0)
+{
+foreach ($query->result() as $row)
+{
+$data[] = $row;
+}
+return $data;
+};
+
+}
+
+// liste des caissiesr
+	function get_all_caissier(){
+$this->db->select('*');
+$this->db->from('personne as per');
+$this->db->join('caissier as cai', 'per.id = cai.id_personne');
+$query = $this->db->get();
+if($query->num_rows() >0)
+{
+foreach ($query->result() as $row)
+{
+$data[] = $row;
+}
+return $data;
+};
+
+}
+
+// liste des specialiste
+	function get_all_equipement(){
+$this->db->select('*');
+$this->db->from('equipement as eqp');
+$this->db->join('salle as sal', 'eqp.id_salle = sal.id');
+$query = $this->db->get();
+if($query->num_rows() >0)
+{
+foreach ($query->result() as $row)
+{
+$data[] = $row;
+}
+return $data;
+};
+
+}
+
+// liste des specialiste par hopital large
+	function get_all_specialiste_large(){
+$this->db->select('*');
+$this->db->from('hopital as hpt');
+$this->db->join('specialiste as spl','hpt.nom = spl.hopital');
+$query = $this->db->get();
+if($query->num_rows() >0)
+{
+foreach ($query->result() as $row)
+{
+$data[] = $row;
+}
+return $data;
+};
+
+}
+// liste des specialiste par hopital
+function get_all_specialist_hopital(){
+$this->db->select('*');
+$this->db->from('personne as per');
+$this->db->join('specialiste as spl', 'per.id = spl.id_persone');
+$this->db->join('hopital as hpt', 'hpt.nom = spl.hopital');
+//$this->db->order_by('hpt.nom','nom hopital');
+$query = $this->db->get();
+if($query->num_rows() >0)
+{
+foreach ($query->result() as $row)
+{
+$data[] = $row;
+}
+return $data;
+};
+
+}
+
+// liste des consultations
+function get_all_consultation(){
+$this->db->select('*');
+$this->db->from('consultation as consul');
+$this->db->join('agenda as ag', 'ag.id = consul.id_agenda');
+$this->db->join('hopital as hpt', 'hpt.id = consul.id_hopital');
+$this->db->join('patient as pt', 'pt.id = consul.id_patient');
+//$this->db->order_by('hpt.nom','nom hopital');
+$query = $this->db->get();
+if($query->num_rows() >0)
+{
+foreach ($query->result() as $row)
+{
+$data[] = $row;
+}
+return $data;
+};
+
+}
+// supprimer un RDV ou consultation
+
+public function supprimer_rdv($id)
+{
+	return $this->db->where('id', $id)
+			->delete($this->consultation);
+}
+
+// supprimer un equipement
+
+public function supprimer_equipement($id)
+{
+	return $this->db->where('id', $id)
+			->delete($this->equipement);
+}
+	
+	public function editer_equipement($id, $data)
+{
+	
+	$this->db->where('id', $id);
+	
+	return $this->db->update($this->equipement, $data);
+}
+
     public function updates($table,$data,$data_where)
     {
         $this->db->where($data_where);
