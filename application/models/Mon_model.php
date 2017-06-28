@@ -21,7 +21,9 @@ class mon_model extends CI_Model
     {
         $this->table = "chambre";
     }
-
+    /**
+    faire un nouveau enregistrement
+    **/
     public function set($table,$data)
     {
         $this->db->insert($table, $data);
